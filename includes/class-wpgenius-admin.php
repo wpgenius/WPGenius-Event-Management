@@ -36,13 +36,18 @@ class WPGenius_Events_Admin extends WPGenius_Events_API{
 	
 	
 
-	public function events_dashboard_scripts( $hook_suffix ) {
+	public function events_dashboard_scripts( $hook ) {
 		
-		//All Events - dashboard
-		if( $hook_suffix === $this->wgec_screen ) {
-			wp_enqueue_style( 'wgec-admin', WGEC_DIR_URL.'assets/css/style-admin.css' );
-			wp_enqueue_script( 'wgec-admin', WGEC_DIR_URL.'assets/js/wgec-admin.js' ,array( 'jquery' ));
+		if ( 'post.php' !== $hook && 'post-new.php' !== $hook ) {
+			return;
 		}
+	
+		// Enqueue WP media scripts
+		wp_enqueue_media();
+	
+		wp_enqueue_style( 'wpgenius-admin', WPG_EVENT_PLUGIN_URL.'assets/css/style-admin.css' );
+		wp_enqueue_script( 'wpgenius-admin', WPG_EVENT_PLUGIN_URL.'assets/js/admin.js' ,array( 'jquery' ));
+		
 
 	}
 

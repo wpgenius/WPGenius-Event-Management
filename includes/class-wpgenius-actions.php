@@ -104,9 +104,9 @@ class WPGenius_Events_Actions extends WPGenius_Events_API{
 			return;
 		
 		if( is_singular( 'event' ) ){
-			wp_enqueue_style('wgec_css',WGEC_DIR_URL.'assets/css/style.css');			
-			wp_enqueue_script( 'wgec-common', WGEC_DIR_URL.'assets/js/wgec-common.js' ,array( 'jquery'));
-			wp_localize_script( 'wgec-common', 'wgec_common', $this->get_localise( 'common' ) );
+			wp_enqueue_style('wgec_css',WPG_EVENT_PLUGIN_URL.'assets/css/style.css');			
+			wp_enqueue_script( 'wpgenius-common', WPG_EVENT_PLUGIN_URL.'assets/js/common.js' ,array( 'jquery'));
+			wp_localize_script( 'wpgenius-common', 'wgec_common', $this->get_localise( 'common' ) );
 		}
 	}
 	
