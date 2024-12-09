@@ -4,7 +4,7 @@
  * @class       WPGenius_Events_DB
  * @author      Team WPGenius (Makarand Mane)
  * @category    Admin
- * @package     wpgenius-events-calendar/includes
+ * @package     wpgenius-event-management/includes
  * @version     1.0
  */
 

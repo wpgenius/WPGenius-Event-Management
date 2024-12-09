@@ -33,6 +33,7 @@ dw_php_codehinting.config
 *.mno
 *.xml
 *.lck
+.DS_Store
 
 #VSCode
 .vscode/

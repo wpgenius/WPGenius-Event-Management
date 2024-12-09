@@ -4,7 +4,7 @@
  * @class       WPGenius_Events_Admin
  * @author      Team WPGenius (Makarand Mane)
  * @category    Admin
- * @package     wpgenius-events-calendar/includes
+ * @package     wpgenius-event-management/includes
  * @version     1.0
  */
 
@@ -59,7 +59,7 @@ class WPGenius_Events_Admin extends WPGenius_Events_API{
 			return;
 	 
 		$args = array(
-			'label' => __('Events per page', 'wpgenius-events-calendar'),
+			'label' => __('Events per page', 'wpgenius-event-management'),
 			'default' => 10,
 			'option' => 'events_per_page'
 		);

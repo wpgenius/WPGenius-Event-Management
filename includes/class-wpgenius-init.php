@@ -4,7 +4,7 @@
  * @class       WPGenius_Events_API
  * @author      Team WPGenius (Makarand Mane)
  * @category    Admin
- * @package     wpgenius-events-calendar/includes
+ * @package     wpgenius-event-management/includes
  * @version     1.0
  */
 
@@ -60,11 +60,11 @@ class WPGenius_Events_API{
 							'nonce'				=>	wp_create_nonce( 'event_security_nonce' ),
 							'location_url'		=>	admin_url('admin.php').'?page=add_event&event_id=',
 							'modal_url'			=>  admin_url('admin-ajax.php').'?action=create_front_event',
-							'alert'				=>	__( 'Alert!', 'wpgenius-events-calendar' ),
-							'edit_event'		=>	__( 'Edit event', 'wpgenius-events-calendar' ),
-							'json_error'		=>	__( 'Please contact administrator!', 'wpgenius-events-calendar' ),
-							'saving_msg'		=>	__( 'Saving event...', 'wpgenius-events-calendar' ),
-							'save_msg'			=>	__( 'Save', 'wpgenius-events-calendar' ),
+							'alert'				=>	__( 'Alert!', 'wpgenius-event-management' ),
+							'edit_event'		=>	__( 'Edit event', 'wpgenius-event-management' ),
+							'json_error'		=>	__( 'Please contact administrator!', 'wpgenius-event-management' ),
+							'saving_msg'		=>	__( 'Saving event...', 'wpgenius-event-management' ),
+							'save_msg'			=>	__( 'Save', 'wpgenius-event-management' ),
 						);
 			break;			
 			
@@ -80,7 +80,7 @@ class WPGenius_Events_API{
 		if ( isset( $_REQUEST['security'] ) && wp_verify_nonce( $_REQUEST['security'], $action ) ){
 			return true;
 		}
-		wp_send_json_error( array( 'msg'=> __('Invalid security token sent.', 'wpgenius-events-calendar' ) ) );
+		wp_send_json_error( array( 'msg'=> __('Invalid security token sent.', 'wpgenius-event-management' ) ) );
 	}	
 	
 	/**
@@ -116,15 +116,6 @@ class WPGenius_Events_API{
 		if( !$time )
 			$time = get_option('events_reminder_interval' );
 		$time_in_second = $time * 60;
-		
-		// global $wpdb;
-		// $args = array(
-		// 	'status'	=>  'upcoming',
-		// 	'per_page'	=>	1000
-		// );
-		// $classes = $this->get_classes( $args );
-		// foreach ($classes as $class ) 
-		// 	$this->schedule_cron( $class, $time_in_second );
 	}
 	
 	/**
@@ -140,19 +131,7 @@ class WPGenius_Events_API{
 					wp_unschedule_event( $timestamp, $hook, $single_event[ 'args' ] );
 			}
 		}
-		
-		/**
-		*	Optional code using DB
-		global $wpdb;
-		$args = array(
-			'status'	=>  'upcoming',
-			'per_page'	=>	1000
-		);
-		$classes = $this->get_classes( $args );
-		foreach ($classes as $class ) {
-			$this->unschedule_cron( $class[ 'class_id'] );
-		}
-		*/
+
 	}
 	
 
