@@ -127,23 +127,11 @@ class WPGenius_Speaker {
 		wp_nonce_field( 'wpgenius_save_speaker_details', 'wpgenius_speaker_nonce' );
 	
 		// Retrieve existing meta data.
-		$event_terms      = get_terms( array( 'taxonomy' => 'event_taxonomy', 'hide_empty' => false ) );
-		$selected_event   = wp_get_post_terms( $post->ID, 'event_taxonomy', array( 'fields' => 'ids' ) );
 		$designation      = get_post_meta( $post->ID, '_designation', true );
 		$company_name     = get_post_meta( $post->ID, '_company_name', true );
 		$company_logo     = get_post_meta( $post->ID, '_company_logo', true );
 		$email_address    = get_post_meta( $post->ID, '_email_address', true );
 		$featured_speaker = get_post_meta( $post->ID, '_featured_speaker', true );
-	
-		// Event Field
-		echo '<p><label for="speaker_event">' . __( 'Event:', 'wpgenius-event-plugin' ) . '</label>';
-		echo '<select name="speaker_event" id="speaker_event">';
-		foreach ( $event_terms as $event ) {
-			$selected = ( in_array( $event->term_id, $selected_event ) ) ? 'selected' : '';
-			echo '<option value="' . esc_attr( $event->term_id ) . '" ' . $selected . '>' . esc_html( $event->name ) . '</option>';
-		}
-		echo '</select></p>';
-		echo '<p class="description">' . __( 'Select the event this speaker is associated with.', 'wpgenius-event-plugin' ) . '</p>';
 	
 		// Designation Field
 		echo '<p><label for="designation">' . __( 'Designation:', 'wpgenius-event-plugin' ) . '</label>';
@@ -202,11 +190,6 @@ class WPGenius_Speaker {
             return;
         }
 
-        // Save Event association.
-        if ( isset( $_POST['speaker_event'] ) ) {
-            wp_set_post_terms( $post_id, intval( $_POST['speaker_event'] ), 'event_taxonomy' );
-        }
-
         // Save other meta data.
         update_post_meta( $post_id, '_designation', sanitize_text_field( $_POST['designation'] ) );
         update_post_meta( $post_id, '_company_name', sanitize_text_field( $_POST['company_name'] ) );
@@ -224,13 +207,11 @@ class WPGenius_Speaker {
     public function add_custom_columns( $columns ) {
         $new_columns = array();
         foreach ( $columns as $key => $title ) {
+            $new_columns[ $key ] = $title;
             if ( $key == 'title' ) {
                 $new_columns['featured_image']    = __( 'Image', 'wpgenius-event-plugin' );
-                $new_columns['designation']       = __( 'Designation', 'wpgenius-event-plugin' );
                 $new_columns['company']           = __( 'Company', 'wpgenius-event-plugin' );
-                $new_columns['speaker_event']     = __( 'Event', 'wpgenius-event-plugin' );
             }
-            $new_columns[ $key ] = $title;
         }
         return $new_columns;
     }
@@ -249,20 +230,13 @@ class WPGenius_Speaker {
                 }
                 break;
 
-            case 'designation':
+            case 'company':
+                $company = get_post_meta( $post_id, '_company_name', true );
+                echo esc_html( $company );
                 $designation = get_post_meta( $post_id, '_designation', true );
                 echo esc_html( $designation );
                 break;
 
-            case 'company':
-                $company = get_post_meta( $post_id, '_company_name', true );
-                echo esc_html( $company );
-                break;
-
-            case 'speaker_event':
-                $events = wp_get_post_terms( $post_id, 'event_taxonomy', array( 'fields' => 'names' ) );
-                echo esc_html( implode( ', ', $events ) );
-                break;
         }
     }
 }
