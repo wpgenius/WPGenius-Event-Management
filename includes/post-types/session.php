@@ -150,8 +150,6 @@ class WPGenius_Session {
     public function render_meta_box( $post ) {
         wp_nonce_field( 'wpgenius_save_session_details', 'wpgenius_session_nonce' );
 
-        $event_terms      = get_terms( array( 'taxonomy' => 'event_taxonomy', 'hide_empty' => false ) );
-        $selected_event   = wp_get_post_terms( $post->ID, 'event_taxonomy', array( 'fields' => 'ids' ) );
         $session_date     = get_post_meta( $post->ID, '_session_date', true );
         $session_time     = get_post_meta( $post->ID, '_session_time', true );
         $session_length   = get_post_meta( $post->ID, '_session_length', true );
@@ -167,16 +165,6 @@ class WPGenius_Session {
             'orderby'        => 'title',
             'order'          => 'ASC',
         ) );
-
-        // Event field
-        echo '<p><label for="session_event">' . __( 'Event:', 'wpgenius-event-plugin' ) . '</label>';
-        echo '<select name="session_event" id="session_event">';
-        foreach ( $event_terms as $event ) {
-            $selected = ( in_array( $event->term_id, $selected_event ) ) ? 'selected' : '';
-            echo '<option value="' . esc_attr( $event->term_id ) . '" ' . $selected . '>' . esc_html( $event->name ) . '</option>';
-        }
-        echo '</select></p>';
-        echo '<p class="description">' . __( 'Select the event this session belongs to.', 'wpgenius-event-plugin' ) . '</p>';
 
         // Date
         echo '<p><label for="session_date">' . __( 'Date:', 'wpgenius-event-plugin' ) . '</label>';
@@ -235,11 +223,6 @@ class WPGenius_Session {
             return;
         }
 
-        // Save Event
-        if ( isset( $_POST['session_event'] ) ) {
-            wp_set_post_terms( $post_id, intval( $_POST['session_event'] ), 'event_taxonomy' );
-        }
-
         // Save Date/Time/Length/Type/Links
         if ( isset( $_POST['session_date'] ) ) {
             update_post_meta( $post_id, '_session_date', sanitize_text_field( $_POST['session_date'] ) );
@@ -279,14 +262,11 @@ class WPGenius_Session {
     public function add_custom_columns( $columns ) {
         $new_columns = array();
         foreach ( $columns as $key => $title ) {
+            $new_columns[ $key ] = $title;
             if ( $key == 'title' ) {
-                $new_columns['session_event']         = __( 'Event', 'wpgenius-event-plugin' );
                 $new_columns['session_date_time']     = __( 'Date & Time', 'wpgenius-event-plugin' );
-                $new_columns['session_track']         = __( 'Track', 'wpgenius-event-plugin' );
-                $new_columns['session_event_category']= __( 'Event Category', 'wpgenius-event-plugin' );
                 $new_columns['session_speakers']      = __( 'Speakers', 'wpgenius-event-plugin' );
             }
-            $new_columns[ $key ] = $title;
         }
         return $new_columns;
     }
@@ -296,25 +276,11 @@ class WPGenius_Session {
      */
     public function render_custom_columns( $column, $post_id ) {
         switch ( $column ) {
-            case 'session_event':
-                $events = wp_get_post_terms( $post_id, 'event_taxonomy', array( 'fields' => 'names' ) );
-                echo esc_html( implode( ', ', $events ) );
-                break;
-
+            
             case 'session_date_time':
                 $date = get_post_meta( $post_id, '_session_date', true );
                 $time = get_post_meta( $post_id, '_session_time', true );
                 echo esc_html( $date . ' ' . $time );
-                break;
-
-            case 'session_track':
-                $tracks = wp_get_post_terms( $post_id, 'session_track', array( 'fields' => 'names' ) );
-                echo esc_html( implode( ', ', $tracks ) );
-                break;
-
-            case 'session_event_category':
-                $categories = wp_get_post_terms( $post_id, 'event_category', array( 'fields' => 'names' ) );
-                echo esc_html( implode( ', ', $categories ) );
                 break;
 
             case 'session_speakers':
